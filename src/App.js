@@ -1,25 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react';
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import LoginRegister from './components/LoginRegister';
+import TaskPage from './components/TaskPage';
+import { Provider } from 'react-redux';
+import store from './store';
+import { setAuthToken } from './api/axios';
 
-function App() {
+function AppRoutes() {
+  // set token on app load
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) setAuthToken(token);
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Routes>
+      <Route path="/" element={<LoginRegister />} />
+      <Route path="/tasks" element={<TaskPage />} />
+    </Routes>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <Provider store={store}>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </Provider>
+  );
+}
